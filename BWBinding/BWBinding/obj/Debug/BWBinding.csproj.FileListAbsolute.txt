@@ -1,0 +1,5 @@
+C:\Users\Emil S. Kolvig-Raun\git\bw-csharp-binding\BWBinding\BWBinding\bin\Debug\BWBinding.dll
+C:\Users\Emil S. Kolvig-Raun\git\bw-csharp-binding\BWBinding\BWBinding\bin\Debug\BWBinding.pdb
+C:\Users\Emil S. Kolvig-Raun\git\bw-csharp-binding\BWBinding\BWBinding\obj\Debug\BWBinding.csprojResolveAssemblyReference.cache
+C:\Users\Emil S. Kolvig-Raun\git\bw-csharp-binding\BWBinding\BWBinding\obj\Debug\BWBinding.dll
+C:\Users\Emil S. Kolvig-Raun\git\bw-csharp-binding\BWBinding\BWBinding\obj\Debug\BWBinding.pdb
