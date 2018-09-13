@@ -11,16 +11,9 @@ First commit
 
 ## Instructions
 First of all you have to install the latest release of BOSSWAVE.
-<br><br>
-**Install on Windows:**
-<br>
-```
-instruction
-```
-<br>
-<br>
+
 **Install on Ubuntu:**
-<br>
+If you're on windows use [WSL](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/).
 ```
 curl get.bw2.io/agent | sudo bash
 ```
