@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BWBinding
+namespace BWBinding.Common
 {
-    class VKSK
+    public class VKSK
     {
         private String key { get; }
         private byte[] value { get; }

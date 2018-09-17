@@ -42,10 +42,9 @@
   <ItemGroup>
     <Compile Include="BossWaveClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VKSK.cs" />
+    <Compile Include="Common\VKSK.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="common\" />
     <Folder Include="publish\" />
     <Folder Include="subscribe\" />
   </ItemGroup>
