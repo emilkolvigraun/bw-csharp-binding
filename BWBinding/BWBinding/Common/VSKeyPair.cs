@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace BWBinding.Common
 {
-    public class VKSK
+    public class VSKeyPair
     {
         private String key { get; }
         private byte[] value { get; }
 
-        public VKSK(String key, byte[] value)
+        public VSKeyPair(String key, byte[] value)
         {
             this.key = key;
             this.value = value;

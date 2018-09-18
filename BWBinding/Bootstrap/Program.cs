@@ -7,7 +7,7 @@ namespace Bootstrap
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            BossWaveClient bwClient = new BossWaveClient("random", 1234);
         }
     }
 }
