@@ -10,10 +10,10 @@ namespace BWBinding.Common
 {
     public class VSKeyPair
     {
-        private String key { get; }
+        private string key { get; }
         private byte[] value { get; }
 
-        public VSKeyPair(String key, byte[] value)
+        public VSKeyPair(string key, byte[] value)
         {
             this.key = key;
             this.value = value;
@@ -21,9 +21,9 @@ namespace BWBinding.Common
 
         public void writeToStream(StreamWriter outputStream)
         {
-            String header = String.Format("kv %s %d\n", key, this.value.Length);
+            string header = string.Format("kv %s %d\n", key, value.Length);
             outputStream.Write(header);
-            outputStream.Write(this.value);
+            outputStream.Write(value);
         }
 
     }

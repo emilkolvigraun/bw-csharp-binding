@@ -18,20 +18,20 @@ namespace BWBinding
     public class BossWaveClient : IDisposable
     {
         private string server;
-        private Int32 portNumber;
+        private int portNumber;
         private TcpClient connection;
-        private StreamReader inputStream;
+        private NetworkStream inputStream;
         private StreamWriter outputStream;
 
         private Dictionary<int, IResponseHandler> responseHandlers;
         private Dictionary<int, IMessageHandler> messageHandlers;
         private Dictionary<int, IListResultHandler> resultHandlers;
-        private readonly Object responseLock;
-        private readonly Object messageLock;
-        private readonly Object resultLock;
+        private Object responseLock;
+        private Object messageLock;
+        private Object resultLock;
 
 
-        public BossWaveClient(string server, Int32 portNumber)
+        public BossWaveClient(string server, int portNumber)
         {
             this.server = server;
             this.portNumber = portNumber;
@@ -51,7 +51,7 @@ namespace BWBinding
             try
             {
                 connection = new TcpClient(server, portNumber);
-                inputStream = new StreamReader(connection.GetStream());
+                inputStream = connection.GetStream();
                 outputStream = new StreamWriter(connection.GetStream());
                 outputStream.AutoFlush = true;
                 new Thread(new ThreadStart(new BossWaveListener().Run)).Start();
