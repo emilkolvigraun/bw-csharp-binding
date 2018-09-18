@@ -2,7 +2,7 @@
 
 namespace BWBinding.Common
 {
-    public class BossListener
+    class BossListener
     {
         public void Run()
         {

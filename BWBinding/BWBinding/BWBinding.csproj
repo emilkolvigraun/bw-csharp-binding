@@ -42,8 +42,12 @@
   <ItemGroup>
     <Compile Include="BossWaveClient.cs" />
     <Compile Include="Common\BossListener.cs" />
+    <Compile Include="Common\Command.cs" />
+    <Compile Include="Utils\CommandUtils.cs" />
+    <Compile Include="Utils\FrameUtils.cs" />
     <Compile Include="Common\Message.cs" />
     <Compile Include="Common\Response.cs" />
+    <Compile Include="Interfaces\IListResultHandler.cs" />
     <Compile Include="Interfaces\IMessageHandler.cs" />
     <Compile Include="Interfaces\IResponseHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
