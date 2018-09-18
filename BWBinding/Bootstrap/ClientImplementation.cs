@@ -7,13 +7,17 @@ namespace Bootstrap
     {
         static void Main(string[] args)
         {
-            BossWaveClient bwClient = new BossWaveClient("localhost", 1234);
+            BossWaveClient bwClient = new BossWaveClient("localhost", 28589);
+
+            bwClient.Connect();
 
             // Purpose is to execute / test commands
             Console.WriteLine(bwClient.MakeEntity());
             Console.WriteLine(bwClient.Subscribe());
             Console.WriteLine(bwClient.Publish());
             Console.WriteLine(bwClient.List());
+
+            bwClient.Dispose();
         }
     }
 }

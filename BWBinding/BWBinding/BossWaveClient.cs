@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using BWBinding.Common;
 using BWBinding.Interfaces;
+using BWBinding.Observer;
 using BWBinding.Utils;
 
 namespace BWBinding
@@ -22,7 +20,8 @@ namespace BWBinding
         private string server;
         private Int32 portNumber;
         private TcpClient connection;
-        private NetworkStream inputStream;
+        private StreamReader inputStream;
+        private StreamWriter outputStream;
 
         private Dictionary<int, IResponseHandler> responseHandlers;
         private Dictionary<int, IMessageHandler> messageHandlers;
@@ -52,8 +51,10 @@ namespace BWBinding
             try
             {
                 connection = new TcpClient(server, portNumber);
-                inputStream = connection.GetStream();
-                new Thread(new ThreadStart(new BossListener().Run)).Start();
+                inputStream = new StreamReader(connection.GetStream());
+                outputStream = new StreamWriter(connection.GetStream());
+                outputStream.AutoFlush = true;
+                new Thread(new ThreadStart(new BossWaveListener().Run)).Start();
             }
             catch(IOException e)
             {
@@ -64,6 +65,7 @@ namespace BWBinding
         public void Dispose()
         {
             inputStream.Close();
+            outputStream.Close();
             connection.Close();
         }
 

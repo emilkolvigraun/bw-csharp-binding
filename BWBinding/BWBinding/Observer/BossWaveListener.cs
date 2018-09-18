@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BWBinding.Common
+namespace BWBinding.Observer
 {
-    class BossListener
+    class BossWaveListener
     {
         public void Run()
         {

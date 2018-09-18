@@ -41,7 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BossWaveClient.cs" />
-    <Compile Include="Common\BossListener.cs" />
+    <Compile Include="Common\Frame.cs" />
+    <Compile Include="Common\PayloadObject.cs" />
+    <Compile Include="Common\RoutingObject.cs" />
+    <Compile Include="Observer\BossWaveListener.cs" />
     <Compile Include="Common\Command.cs" />
     <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\FrameUtils.cs" />
