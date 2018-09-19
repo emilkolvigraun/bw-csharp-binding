@@ -19,7 +19,7 @@ namespace BWBinding.Common
     {
         private static readonly int BW_HEADER_LENGTH = 27;
         public Command command { get; private set; }
-        private int sequenceNumber { get; }
+        public int sequenceNumber { get; private set; }
         private ReadOnlyCollection<VSKeyPair> vsKeyPairs { get; }
         private ReadOnlyCollection<PayloadObject> payloadObjects { get; }
         private ReadOnlyCollection<RoutingObject> routingObjects { get; }
@@ -33,6 +33,19 @@ namespace BWBinding.Common
             this.payloadObjects = payloadObjects.AsReadOnly();
             this.routingObjects = routingObjects.AsReadOnly();
         }
+
+        public byte[] PopFirstValue(string key)
+        {
+            foreach (VSKeyPair pair in vsKeyPairs)
+            {
+                if (pair.key.Equals(key))
+                {
+                    return pair.value;
+                }
+            }
+            return null;
+        }
+
         public static Frame ReadFromStream(NetworkStream inputStream)
         {
             byte[] frameBytes = new byte[BW_HEADER_LENGTH];

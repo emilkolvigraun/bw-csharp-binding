@@ -16,7 +16,5 @@ namespace BWBinding.Common
             this.status = status;
             this.reason = reason;
         }
-
-
     }
 }

@@ -10,8 +10,8 @@ namespace BWBinding.Common
 {
     public class VSKeyPair
     {
-        private string key { get; }
-        private byte[] value { get; }
+        public string key { get; private set; }
+        public byte[] value { get; private set; }
 
         public VSKeyPair(string key, byte[] value)
         {

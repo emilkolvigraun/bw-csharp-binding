@@ -24,29 +24,21 @@ namespace BWBinding
         private NetworkStream inputStream;
         private StreamWriter outputStream;
 
-        private Dictionary<int, IResponseHandler> responseHandlers;
-        private Dictionary<int, IMessageHandler> messageHandlers;
-        private Dictionary<int, IListResultHandler> resultHandlers;
-        private Object responseLock;
-        private Object messageLock;
-        private Object resultLock;
-
-
         public BossWaveClient(string server, int portNumber)
         {
             this.server = server;
             this.portNumber = portNumber;
 
-            responseHandlers = new Dictionary<int, IResponseHandler>();
-            messageHandlers = new Dictionary<int, IMessageHandler>();
-            resultHandlers = new Dictionary<int, IListResultHandler>();
-            responseLock = new Object();
-            messageLock = new Object();
-            resultLock = new Object();
+            Controller.Instance.responseHandlers = new Dictionary<int, IResponseHandler>();
+            Controller.Instance.messageHandlers = new Dictionary<int, IMessageHandler>();
+            Controller.Instance.resultHandlers = new Dictionary<int, IListResultHandler>();
+            Controller.Instance.responseLock = new object();
+            Controller.Instance.messageLock = new object();
+            Controller.Instance.resultLock = new object();
         }
 
         /**
-         * Establishing the connection and creating a ThreadStart delegate */
+         * Establishing the connection and creating a Thread delegate */
         public void Connect()
         {
             try
@@ -54,26 +46,34 @@ namespace BWBinding
                 connection = new TcpClient(server, portNumber);
                 inputStream = connection.GetStream();
                 outputStream = new StreamWriter(connection.GetStream());
-                try
-                {
-                    Frame frame = Frame.ReadFromStream(inputStream);
-                    if (frame.command != Command.HELLO)
-                    {
-                        Dispose();
-                        throw new SystemException("Recieved an invalid BOSSWAVE Acknowledgement. ");
-                    }
-                }
-                catch (CorruptedFrameException ex)
+                Frame frame = Frame.ReadFromStream(inputStream);
+
+                if (frame.command != Command.HELLO)
                 {
                     Dispose();
+                    throw new SystemException("Recieved an invalid BOSSWAVE Acknowledgement. ");
+                }
+
+                new Thread(() => Listen(inputStream)).Start();
+            }
+            catch(Exception ex) when (ex is SocketException || ex is IOException || ex is CorruptedFrameException)
+            {
+                Dispose();
+                if (ex is CorruptedFrameException)
+                {
+
                     throw new SystemException(ex.ToString());
                 }
-                new Thread(new ThreadStart(new BossWaveListener().Run)).Start();
-            }
-            catch(Exception ex) when (ex is SocketException || ex is IOException)
-            {
-                throw new Exception("Couldn't connect to the server.\n" + ex.ToString());
+                else
+                {
+                    throw new Exception("Couldn't connect to the server.\n" + ex.ToString());
+                }              
             } 
+        }
+
+        private void Listen(NetworkStream inputStream)
+        {
+            new BossWaveListener().Run(inputStream);
         }
 
         public void Dispose()
@@ -90,25 +90,25 @@ namespace BWBinding
          */
         private void ActivateResultHandler(int sequenceNumber, IListResultHandler listResultHandler)
         {
-            lock (resultLock)
+            lock (Controller.Instance.resultLock)
             {
-                resultHandlers.Add(sequenceNumber, listResultHandler);
+                Controller.Instance.resultHandlers.Add(sequenceNumber, listResultHandler);
             }
         }
 
         private void ActivateMessageHandler(int sequenceNumber, IMessageHandler messageHandler)
         {
-            lock (messageLock)
+            lock (Controller.Instance.messageLock)
             {
-                messageHandlers.Add(sequenceNumber, messageHandler);
+                Controller.Instance.messageHandlers.Add(sequenceNumber, messageHandler);
             }
         }
 
         private void ActivateResponseHandler(int sequenceNumber, IResponseHandler responseHandler)
         {
-            lock (responseLock)
+            lock (Controller.Instance.responseLock)
             {
-                responseHandlers.Add(sequenceNumber, responseHandler);
+                Controller.Instance.responseHandlers.Add(sequenceNumber, responseHandler);
             }
         }
 
