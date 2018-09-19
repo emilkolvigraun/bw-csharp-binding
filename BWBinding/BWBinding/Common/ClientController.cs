@@ -1,9 +1,7 @@
 ﻿using BWBinding.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Net.Sockets;
 
 namespace BWBinding.Common
 {
@@ -15,6 +13,8 @@ namespace BWBinding.Common
         public object responseLock { get; set; }
         public object messageLock { get; set; }
         public object resultLock { get; set; }
+        public NetworkStream inputStream { get; set; }
+        public StreamWriter outputStream { get; set; }
 
         public ClientController()
         {

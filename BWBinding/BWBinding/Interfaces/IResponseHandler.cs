@@ -2,6 +2,6 @@
 {
     interface IResponseHandler
     {
-        void onResponseReceived(Common.Response result);
+        void ResponseReceived(Common.Response result);
     }
 }

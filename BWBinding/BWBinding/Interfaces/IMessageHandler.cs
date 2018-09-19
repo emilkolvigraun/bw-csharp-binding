@@ -2,6 +2,6 @@
 {
     interface IMessageHandler
     {
-        void onResultReceived(Common.Message message);
+        void ResultReceived(Common.Message message);
     }
 }

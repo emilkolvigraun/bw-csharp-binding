@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BossWaveClient.cs" />
+    <Compile Include="Common\ClientController.cs" />
+    <Compile Include="Common\Controller.cs" />
     <Compile Include="Common\Frame.cs" />
     <Compile Include="Common\PayloadObject.cs" />
     <Compile Include="Common\RoutingObject.cs" />
@@ -59,10 +61,7 @@
     <Compile Include="Common\VSKeyPair.cs" />
     <Compile Include="Utils\PayloadUtils.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="publish\" />
-    <Folder Include="subscribe\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

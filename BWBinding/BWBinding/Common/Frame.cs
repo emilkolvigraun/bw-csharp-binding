@@ -20,18 +20,23 @@ namespace BWBinding.Common
         private static readonly int BW_HEADER_LENGTH = 27;
         public Command command { get; private set; }
         public int sequenceNumber { get; private set; }
-        private ReadOnlyCollection<VSKeyPair> vsKeyPairs { get; }
-        private ReadOnlyCollection<PayloadObject> payloadObjects { get; }
-        private ReadOnlyCollection<RoutingObject> routingObjects { get; }
+        private List<VSKeyPair> vsKeyPairs { get; }
+        public List<PayloadObject> payloadObjects { private set; get; }
+        public List<RoutingObject> routingObjects { private set; get; }
 
         public Frame(Command command, int sequenceNumber, List<VSKeyPair> vsKeyPairs, 
             List<PayloadObject> payloadObjects, List<RoutingObject> routingObjects)
         {
             this.command = command;
             this.sequenceNumber = sequenceNumber;
-            this.vsKeyPairs = vsKeyPairs.AsReadOnly();
-            this.payloadObjects = payloadObjects.AsReadOnly();
-            this.routingObjects = routingObjects.AsReadOnly();
+            this.vsKeyPairs = vsKeyPairs;
+            this.payloadObjects = payloadObjects;
+            this.routingObjects = routingObjects;
+        }
+
+        public List<RoutingObject> RoutingObjects
+        {
+            get { return routingObjects; }
         }
 
         public byte[] PopFirstValue(string key)
@@ -219,9 +224,9 @@ namespace BWBinding.Common
             return frame != null &&
                    command == frame.command &&
                    sequenceNumber == frame.sequenceNumber &&
-                   EqualityComparer<ReadOnlyCollection<VSKeyPair>>.Default.Equals(vsKeyPairs, frame.vsKeyPairs) &&
-                   EqualityComparer<ReadOnlyCollection<PayloadObject>>.Default.Equals(payloadObjects, frame.payloadObjects) &&
-                   EqualityComparer<ReadOnlyCollection<RoutingObject>>.Default.Equals(routingObjects, frame.routingObjects);
+                   EqualityComparer<List<VSKeyPair>>.Default.Equals(vsKeyPairs, frame.vsKeyPairs) &&
+                   EqualityComparer<List<PayloadObject>>.Default.Equals(payloadObjects, frame.payloadObjects) &&
+                   EqualityComparer<List<RoutingObject>>.Default.Equals(routingObjects, frame.routingObjects);
         }
 
         // Mother Writer
