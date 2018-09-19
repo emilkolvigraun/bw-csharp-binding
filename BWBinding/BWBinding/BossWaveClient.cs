@@ -20,7 +20,7 @@ namespace BWBinding
         private string server;
         private int portNumber;
         private TcpClient connection;
-        private NetworkStream inputStream;
+        private StreamReader inputStream;
         private StreamWriter outputStream;
 
         private Dictionary<int, IResponseHandler> responseHandlers;
@@ -51,7 +51,7 @@ namespace BWBinding
             try
             {
                 connection = new TcpClient(server, portNumber);
-                inputStream = connection.GetStream();
+                inputStream = new StreamReader(connection.GetStream());
                 outputStream = new StreamWriter(connection.GetStream());
                 outputStream.AutoFlush = true;
                 new Thread(new ThreadStart(new BossWaveListener().Run)).Start();

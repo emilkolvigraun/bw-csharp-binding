@@ -15,7 +15,7 @@ namespace BWBinding.Common
             this.type = type;
             this.load = load;
         }
-        public void writeToStream(StreamWriter outputStream)
+        public void Write(StreamWriter outputStream)
         {
             string header = string.Format("po %s %d\n", type, load.Length);
             outputStream.Write(Encoding.UTF8.GetBytes(header));
@@ -39,7 +39,7 @@ namespace BWBinding.Common
             }
             return true;
         }
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (o == this)
             {
