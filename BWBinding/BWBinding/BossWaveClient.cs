@@ -56,9 +56,9 @@ namespace BWBinding
                 outputStream.AutoFlush = true;
                 new Thread(new ThreadStart(new BossWaveListener().Run)).Start();
             }
-            catch(IOException e)
+            catch(Exception ex) when (ex is SocketException || ex is IOException)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Couldn't connect to the server.\n" + ex.ToString());
             } 
         }
 
@@ -99,7 +99,7 @@ namespace BWBinding
         }
 
         /**
-         * The following methods are public User abilities
+         * The following methods are public User actions / abilities
          */
         public void SetEntity()
         {
@@ -110,43 +110,43 @@ namespace BWBinding
         {
 
             Command command = Command.MAKE_ENTITY;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
 
         public string Publish()
         {
             Command command = Command.PUBLISH;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
 
         public string Subscribe()
         {
             Command command = Command.SUBSCRIBE;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
 
         public string List()
         {
             Command command = Command.LIST;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
 
         public string Query()
         {
             Command command = Command.QUERY;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
 
         public string MakeDoT()
         {
             Command command = Command.MAKE_DOT;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
 
         public string MakeChain()
         {
             Command command = Command.MAKE_CHAIN;
-            return CommandUtils.StringValueOf(command);
+            return CommandUtils.GetCode(command);
         }
     }
 }

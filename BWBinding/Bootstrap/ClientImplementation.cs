@@ -19,7 +19,6 @@ namespace Bootstrap
             Console.WriteLine(bwClient.MakeChain());
             Console.WriteLine(bwClient.MakeDoT());
             Console.WriteLine(bwClient.Query());
-
             bwClient.Dispose();
         }
     }
