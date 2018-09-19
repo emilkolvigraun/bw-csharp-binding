@@ -1,9 +1,9 @@
-﻿using BWBinding.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using BWBinding.Interfaces;
 
-namespace BWBinding.Common
+namespace BWBinding.Control
 {
     class ClientController
     {

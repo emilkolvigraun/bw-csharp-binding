@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using BWBinding.Common;
+using BWBinding.Control;
 using BWBinding.Exceptions;
 using BWBinding.Interfaces;
 using BWBinding.Observer;

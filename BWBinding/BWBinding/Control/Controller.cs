@@ -1,4 +1,4 @@
-﻿namespace BWBinding.Common
+﻿namespace BWBinding.Control
 {
     class Controller
     {

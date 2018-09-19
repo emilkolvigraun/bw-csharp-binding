@@ -41,8 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BossWaveClient.cs" />
-    <Compile Include="Common\ClientController.cs" />
-    <Compile Include="Common\Controller.cs" />
+    <Compile Include="Common\ChainLevel.cs" />
+    <Compile Include="Control\ClientController.cs" />
+    <Compile Include="Control\Controller.cs" />
     <Compile Include="Common\Frame.cs" />
     <Compile Include="Common\PayloadObject.cs" />
     <Compile Include="Common\RoutingObject.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\VSKeyPair.cs" />
     <Compile Include="Utils\PayloadUtils.cs" />
+    <Compile Include="Utils\PubSubUtils.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

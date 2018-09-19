@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using BWBinding.Exceptions;
 using BWBinding.Utils;
