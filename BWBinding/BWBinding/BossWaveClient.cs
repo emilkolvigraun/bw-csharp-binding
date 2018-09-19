@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using BWBinding.Common;
+using BWBinding.Exceptions;
 using BWBinding.Interfaces;
 using BWBinding.Observer;
 using BWBinding.Utils;
@@ -53,12 +54,25 @@ namespace BWBinding
                 connection = new TcpClient(server, portNumber);
                 inputStream = connection.GetStream();
                 outputStream = new StreamWriter(connection.GetStream());
-                outputStream.AutoFlush = true;
+                try
+                {
+                    Frame frame = Frame.ReadFromStream(inputStream);
+                    if (frame.command != Command.HELLO)
+                    {
+                        Dispose();
+                        throw new SystemException("Recieved an invalid BOSSWAVE Acknowledgement. ");
+                    }
+                }
+                catch (CorruptedFrameException ex)
+                {
+                    Dispose();
+                    throw new SystemException(ex.ToString());
+                }
                 new Thread(new ThreadStart(new BossWaveListener().Run)).Start();
             }
             catch(Exception ex) when (ex is SocketException || ex is IOException)
             {
-                Console.WriteLine("Couldn't connect to the server.\n" + ex.ToString());
+                throw new Exception("Couldn't connect to the server.\n" + ex.ToString());
             } 
         }
 

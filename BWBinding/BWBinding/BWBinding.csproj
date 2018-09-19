@@ -57,6 +57,7 @@
     <Compile Include="Interfaces\IResponseHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\VSKeyPair.cs" />
+    <Compile Include="Utils\PayloadUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="publish\" />
