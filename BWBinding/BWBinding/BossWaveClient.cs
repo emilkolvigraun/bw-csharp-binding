@@ -22,6 +22,7 @@ namespace BWBinding
         private string server;
         private int portNumber;
         private TcpClient connection;
+        private Thread listenerThread;
 
         public BossWaveClient(string server, int portNumber)
         {
@@ -42,6 +43,7 @@ namespace BWBinding
         {
             try
             {
+                listenerThread = new Thread(new ThreadStart(new BossWaveListener().Run));
                 connection = new TcpClient(server, portNumber);
                 Controller.Instance.inputStream = connection.GetStream();
                 Controller.Instance.outputStream = new StreamWriter(connection.GetStream());
@@ -51,8 +53,7 @@ namespace BWBinding
                     Dispose();
                     throw new SystemException("Recieved an invalid BOSSWAVE Acknowledgement.\n");
                 }
-
-                new Thread(new ThreadStart(new BossWaveListener().Run)).Start();
+                listenerThread.Start();
             }
             catch(Exception ex) when (ex is SocketException || ex is IOException || ex is CorruptedFrameException)
             {
@@ -71,10 +72,10 @@ namespace BWBinding
 
         public void Dispose()
         {
+            listenerThread.Interrupt();
             Controller.Instance.inputStream.Close();
             Controller.Instance.outputStream.Close();
             connection.Close();
-            Environment.Exit(Environment.ExitCode);
         }
 
         /**

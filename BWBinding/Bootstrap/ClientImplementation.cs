@@ -20,10 +20,6 @@ namespace Bootstrap
             Console.WriteLine(bwClient.MakeDoT());
             Console.WriteLine(bwClient.Query());
 
-            for (int i = 0; i < 900000000; i++)
-            {
-                // Wait
-            }
             bwClient.Dispose();
         }
     }

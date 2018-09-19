@@ -14,7 +14,7 @@ namespace BWBinding.Common
      */
     class Frame
     {
-        private static readonly int BW_HEADER_LENGTH = 27;
+        private static int BW_HEADER_LENGTH = 27;
         public Command command { get; private set; }
         public int sequenceNumber { get; private set; }
         private List<VSKeyPair> vsKeyPairs { get; }
@@ -51,17 +51,17 @@ namespace BWBinding.Common
         public static Frame ReadFromStream(NetworkStream inputStream)
         {
             byte[] frameBytes = new byte[BW_HEADER_LENGTH];
+            string[] authorizationTokens;
             try
             {
-                inputStream.Read(frameBytes, 0, BW_HEADER_LENGTH);
+                inputStream.Read(frameBytes, 0, BW_HEADER_LENGTH);         
+                string frameHeader = Encoding.UTF8.GetString(frameBytes);
+                authorizationTokens = frameHeader.Split(' ').Select(str => str.Trim()).ToArray();
             }
             catch (IOException ex)
             {
-                throw new IOException("The Header is corrupted.", ex);
+                throw new IOException("The Header is corrupted.\n", ex);
             }
-
-            string frameHeader = Encoding.UTF8.GetString(frameBytes);
-            string[] authorizationTokens = frameHeader.Split(' ').Select(str => str.Trim()).ToArray();
 
             if (authorizationTokens.Length != 3)
             {
@@ -77,7 +77,7 @@ namespace BWBinding.Common
             }
             catch (FormatException ex)
             {
-                throw new CorruptedFrameException("The length of the Frame Header is invalid: ", ex);
+                throw new CorruptedFrameException("The length of the Frame Header is invalid.\n", ex);
             }
 
             int sequenceNumber;
@@ -87,7 +87,7 @@ namespace BWBinding.Common
             }
             catch (FormatException ex)
             {
-                throw new CorruptedFrameException("The sequence number is invalid: ", ex);
+                throw new CorruptedFrameException("The sequence number is invalid.\n", ex);
             }
             
             List<VSKeyPair> vsKeyPairs = new List<VSKeyPair>();
@@ -113,7 +113,7 @@ namespace BWBinding.Common
                 }
                 catch (FormatException ex)
                 {
-                    throw new CorruptedFrameException("The length of the Header is corrupted: " + currentLine, ex);
+                    throw new CorruptedFrameException("The length of the Header is corrupted: " + currentLine + "\n", ex);
                 }
 
                 switch (tokens[0])
@@ -153,7 +153,7 @@ namespace BWBinding.Common
                         }
                         catch (ArgumentException ex)
                         {
-                            throw new CorruptedFrameException("The Payload type is invalid: " + currentLine, ex);
+                            throw new CorruptedFrameException("The Payload type is invalid: " + currentLine + "\n", ex);
                         }
                         byte[] payloadBody = new byte[length];
                         inputStream.Read(payloadBody, 0, length);
@@ -198,7 +198,7 @@ namespace BWBinding.Common
             }
             catch (IOException ex)
             {
-                throw new IOException("Cannot interpret the stream. \n");
+                throw new IOException("Cannot interpret the stream.\n");
             }
             string currentLine = Encoding.UTF8.GetString(bytes);
             if (currentLine.EndsWith("\n"))
