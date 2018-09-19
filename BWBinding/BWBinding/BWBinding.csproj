@@ -44,6 +44,7 @@
     <Compile Include="Common\Frame.cs" />
     <Compile Include="Common\PayloadObject.cs" />
     <Compile Include="Common\RoutingObject.cs" />
+    <Compile Include="Common\Type.cs" />
     <Compile Include="Exceptions\CorruptedFrameException.cs" />
     <Compile Include="Observer\BossWaveListener.cs" />
     <Compile Include="Common\Command.cs" />
