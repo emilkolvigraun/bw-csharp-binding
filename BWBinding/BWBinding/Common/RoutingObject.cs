@@ -20,7 +20,7 @@ namespace BWBinding.Common
             this.routingNumber = routingNumber;
             this.load = load;
         }
-        public void Write(StreamWriter outputStream)
+        public void Write(BinaryWriter outputStream)
         {
             string header = string.Format("ro %d %d\n", routingNumber, load.Length);
             outputStream.Write(Encoding.UTF8.GetBytes(header));

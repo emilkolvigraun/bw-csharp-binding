@@ -14,7 +14,7 @@ namespace BWBinding.Control
         public object messageLock { get; set; }
         public object resultLock { get; set; }
         public NetworkStream inputStream { get; set; }
-        public StreamWriter outputStream { get; set; }
+        public BinaryWriter outputStream { get; set; }
 
         public ClientController()
         {

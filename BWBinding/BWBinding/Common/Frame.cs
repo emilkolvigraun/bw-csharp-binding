@@ -227,7 +227,7 @@ namespace BWBinding.Common
         }
 
         // Mother Writer
-        public void Write(StreamWriter outputStream)
+        public void Write(BinaryWriter outputStream)
         {
             outputStream.Write(Encoding.UTF8.GetBytes(string.Format("%s 0000000000 %010d\n", CommandUtils.GetCode(command), sequenceNumber)));
             foreach (VSKeyPair pair in vsKeyPairs)

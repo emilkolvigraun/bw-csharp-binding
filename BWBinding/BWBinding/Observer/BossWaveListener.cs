@@ -97,6 +97,7 @@ namespace BWBinding.Observer
                                 break;
                             default:
                                 break;
+
                         }
                     }
                 }

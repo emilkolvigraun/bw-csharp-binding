@@ -46,7 +46,7 @@ namespace BWBinding
                 listenerThread = new Thread(new ThreadStart(new BossWaveListener().Run));
                 connection = new TcpClient(server, portNumber);
                 Controller.Instance.inputStream = connection.GetStream();
-                Controller.Instance.outputStream = new StreamWriter(connection.GetStream());
+                Controller.Instance.outputStream = new BinaryWriter(connection.GetStream());
                 Frame frame = Frame.ReadFromStream(Controller.Instance.inputStream);
                 if (frame.command != Command.HELLO)
                 {
@@ -104,6 +104,7 @@ namespace BWBinding
             lock (Controller.Instance.responseLock)
             {
                 Controller.Instance.responseHandlers.Add(sequenceNumber, responseHandler);
+                Console.WriteLine("Activates responsehandler..");
             }
         }
 
@@ -130,18 +131,18 @@ namespace BWBinding
 
         private void BuildEntity(byte[] fileBytes, IResponseHandler responseHandler)
         {
-            Console.WriteLine("Gets here. 1");
+            Console.WriteLine("BuildEntity()");
             int sequenceNumber = Frame.GenerateSequenceNumber();
             FrameUtils frameUtils = new FrameUtils(Command.SET_ENTITY, sequenceNumber);
             PayloadType payloadType = new PayloadType(new byte[]{1, 0, 1, 2});
             PayloadObject payloadObject = new PayloadObject(payloadType, fileBytes);
             frameUtils.AddPayloadObjectGetUtils(payloadObject);
-            Console.WriteLine("Gets here. 2");
+            Console.WriteLine("AddPayloadObjectGetUtils(payloadObject)");
             Frame frame = frameUtils.Build();
             frame.Write(Controller.Instance.outputStream);
             Controller.Instance.outputStream.Flush();
             ActivateResponseHandler(sequenceNumber, responseHandler);
-            Console.WriteLine("Gets here. 3");
+            Console.WriteLine("frame.Write(Controller.Instance.outputStream)");
         }
 
         public string MakeEntity()

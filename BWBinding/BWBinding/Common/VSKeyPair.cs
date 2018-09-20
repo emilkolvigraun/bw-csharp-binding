@@ -13,7 +13,7 @@ namespace BWBinding.Common
             this.value = value;
         }
 
-        public void Write(StreamWriter outputStream)
+        public void Write(BinaryWriter outputStream)
         {
             string header = string.Format("kv %s %d\n", key, value.Length);
             outputStream.Write(header);

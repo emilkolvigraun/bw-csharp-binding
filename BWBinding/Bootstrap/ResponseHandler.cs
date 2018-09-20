@@ -10,13 +10,14 @@ namespace Bootstrap
     {
         public void ResponseReceived(Response result)
         {
-            if (result.status.Equals("okay"))
+            Console.Write("Received response: ");
+            if (!result.status.Equals("okay"))
             {
-                Console.WriteLine("'SetEntity(...)' action Complete.'");
+                Console.WriteLine("'SetEntity(...)' action Failed because: " + result.reason);
             }
             else
             {
-                Console.WriteLine("'SetEntity(...)' action Failed because: " + result.reason);
+                Console.WriteLine("'SetEntity(...)' action Complete.'");
             }
         }
     }

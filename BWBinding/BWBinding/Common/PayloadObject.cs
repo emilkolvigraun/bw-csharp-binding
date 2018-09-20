@@ -15,13 +15,14 @@ namespace BWBinding.Common
             this.type = type;
             this.load = load;
         }
-        public void Write(StreamWriter outputStream)
+        public void Write(BinaryWriter outputStream)
         {
-            Console.WriteLine("Gets here. 4");
+            Console.WriteLine("Write from PayloadObject.");
             string header = string.Format("po %s %d\n", type, load.Length);
             outputStream.Write(Encoding.UTF8.GetBytes(header));
             outputStream.Write(load);
             outputStream.Write('\n');
+            if (outputStream.BaseStream != null) Console.WriteLine("The Stream is Valid.");
         }
         private bool ArraysEqual<T>(T[] a1, T[] a2)
         {
