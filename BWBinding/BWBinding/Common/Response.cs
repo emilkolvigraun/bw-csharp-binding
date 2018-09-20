@@ -1,9 +1,9 @@
 ﻿namespace BWBinding.Common
 {
-    class Response
+    public class Response
     {
-        private string status { get; }
-        private string reason { get; }
+        public string status { private set; get; }
+        public string reason { private set; get; }
 
         public Response(string status, string reason)
         {

@@ -1,7 +1,9 @@
-﻿namespace BWBinding.Interfaces
+﻿using BWBinding.Common;
+
+namespace BWBinding.Interfaces
 {
-    interface IResponseHandler
+    public interface IResponseHandler
     {
-        void ResponseReceived(Common.Response result);
+        void ResponseReceived(Response result);
     }
 }

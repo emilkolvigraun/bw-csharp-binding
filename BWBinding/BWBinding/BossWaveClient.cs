@@ -110,9 +110,38 @@ namespace BWBinding
         /**
          * The following methods are public User actions / abilities
          */
-        public void SetEntity()
+        public void SetEntity(string filepath, IResponseHandler responseHandler)
         {
-            // Set Entity file and make Entity
+            try
+            {
+                using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+                {
+                    byte[] buffer = new byte[fileStream.Length];
+                    fileStream.ReadByte();
+                    fileStream.Read(buffer, 0, (int) fileStream.Length);
+                    BuildEntity(buffer, responseHandler);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException("The path cannot be empty.");
+            }
+        }
+
+        private void BuildEntity(byte[] fileBytes, IResponseHandler responseHandler)
+        {
+            Console.WriteLine("Gets here. 1");
+            int sequenceNumber = Frame.GenerateSequenceNumber();
+            FrameUtils frameUtils = new FrameUtils(Command.SET_ENTITY, sequenceNumber);
+            PayloadType payloadType = new PayloadType(new byte[]{1, 0, 1, 2});
+            PayloadObject payloadObject = new PayloadObject(payloadType, fileBytes);
+            frameUtils.AddPayloadObjectGetUtils(payloadObject);
+            Console.WriteLine("Gets here. 2");
+            Frame frame = frameUtils.Build();
+            frame.Write(Controller.Instance.outputStream);
+            Controller.Instance.outputStream.Flush();
+            ActivateResponseHandler(sequenceNumber, responseHandler);
+            Console.WriteLine("Gets here. 3");
         }
 
         public string MakeEntity()

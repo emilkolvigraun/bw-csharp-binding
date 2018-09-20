@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -16,9 +17,11 @@ namespace BWBinding.Common
         }
         public void Write(StreamWriter outputStream)
         {
+            Console.WriteLine("Gets here. 4");
             string header = string.Format("po %s %d\n", type, load.Length);
             outputStream.Write(Encoding.UTF8.GetBytes(header));
             outputStream.Write(load);
+            outputStream.Write('\n');
         }
         private bool ArraysEqual<T>(T[] a1, T[] a2)
         {

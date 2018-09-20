@@ -25,6 +25,7 @@ namespace BWBinding.Common
             string header = string.Format("ro %d %d\n", routingNumber, load.Length);
             outputStream.Write(Encoding.UTF8.GetBytes(header));
             outputStream.Write(load);
+            outputStream.Write('\n');
         }
         private bool ArraysEqual<T>(T[] a1, T[] a2)
         {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace BWBinding.Common
 {
@@ -24,6 +18,7 @@ namespace BWBinding.Common
             string header = string.Format("kv %s %d\n", key, value.Length);
             outputStream.Write(header);
             outputStream.Write(value);
+            outputStream.Write('\n');
         }
 
     }
