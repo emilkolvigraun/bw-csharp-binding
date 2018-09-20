@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BWBinding.Exceptions
 {
-    class CorruptedFrameException : Exception
+    public class CorruptedFrameException : Exception
     {
         public CorruptedFrameException(string message) : base(message) => Console.WriteLine(message);
 

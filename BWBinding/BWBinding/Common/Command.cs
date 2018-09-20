@@ -2,7 +2,7 @@
 
 namespace BWBinding.Common
 {
-    enum Command
+    public enum Command
     {
         [DescriptionAttribute("publ")] PUBLISH,
         [DescriptionAttribute("pers")] PERSIST,

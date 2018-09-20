@@ -7,7 +7,7 @@ namespace BWBinding.Utils
     /**
      * Frame Technology 
      */
-    class FrameUtils
+    public class FrameUtils
     {
         private Command command;
         private int sequenceNumber;

@@ -12,7 +12,7 @@ namespace Bootstrap
             IMessageHandler messageHandler = new MessageHandler();
             BossWaveClient bwClient = new BossWaveClient("localhost", 28589);
 
-            bwClient.Connect();
+            // bwClient.Connect();
 
             // bwClient.SetEntity("path to key file", responseHandler);
             // bwClient.Publish(publishrequest, responseHandler);
@@ -23,7 +23,10 @@ namespace Bootstrap
             Console.WriteLine(bwClient.MakeDoT());
             Console.WriteLine(bwClient.Query());
 
-            bwClient.Dispose();
+            // bwClient.Dispose();
+
+
+            new FrameFunctionality();
         }
     }
 }

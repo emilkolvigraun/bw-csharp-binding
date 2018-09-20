@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using BWBinding.Exceptions;
 using BWBinding.Utils;
 
@@ -12,12 +13,12 @@ namespace BWBinding.Common
     /**
      * Utilizing the Frame Technology design pattern
      */
-    class Frame
+    public class Frame
     {
         private static int BW_HEADER_LENGTH = 27;
         public Command command { get; private set; }
         public int sequenceNumber { get; private set; }
-        private List<VSKeyPair> vsKeyPairs { get; }
+        public List<VSKeyPair> vsKeyPairs { get; }
         public List<PayloadObject> payloadObjects { private set; get; }
         public List<RoutingObject> routingObjects { private set; get; }
 
@@ -48,7 +49,7 @@ namespace BWBinding.Common
             return null;
         }
 
-        public static Frame ReadFromStream(NetworkStream inputStream)
+        public static Frame ReadFromStream(Stream inputStream)
         {
             byte[] frameBytes = new byte[BW_HEADER_LENGTH];
             string[] authorizationTokens;
@@ -56,7 +57,7 @@ namespace BWBinding.Common
             {
                 inputStream.Read(frameBytes, 0, BW_HEADER_LENGTH);         
                 string frameHeader = Encoding.UTF8.GetString(frameBytes);
-                authorizationTokens = frameHeader.Split(' ').Select(str => str.Trim()).ToArray();
+                authorizationTokens = Regex.Split(frameHeader.Trim(), @" ");
             }
             catch (IOException ex)
             {
@@ -96,10 +97,10 @@ namespace BWBinding.Common
             string currentLine;
             while (!(currentLine = ReadLine(inputStream)).Equals("end"))
             {
-                string[] tokens = currentLine.Split(' ');
+                string[] tokens = Regex.Split(currentLine, @" ");
                 if (tokens.Length != 3)
                 {
-                    throw new CorruptedFrameException("The Header does not contain three fields: " + currentLine);
+                    throw new CorruptedFrameException("The Header does not contain three fields but " + tokens.Length + ".");
                 }
 
                 int length;
@@ -122,7 +123,8 @@ namespace BWBinding.Common
                         string key = tokens[1];
                         byte[] vkBody = new byte[length];
                         inputStream.Read(vkBody, 0, length);
-                        vsKeyPairs.Add(new VSKeyPair(key, vkBody));
+                        VSKeyPair vsKeyPair = new VSKeyPair(key, vkBody);
+                        vsKeyPairs.Add(vsKeyPair);
                         inputStream.ReadByte();
                         break;
                     case "ro":
@@ -168,7 +170,7 @@ namespace BWBinding.Common
 
             return new Frame(command, sequenceNumber, vsKeyPairs, payloadObjects, routingObjects);
         }
-        private static byte[] Read(NetworkStream inputStream, byte end)
+        private static byte[] Read(Stream inputStream, byte end)
         {
             List<byte> bytes = new List<byte>();
             int singleByte = inputStream.ReadByte();
@@ -189,7 +191,7 @@ namespace BWBinding.Common
 
             return returnedBytes;
         }
-        private static string ReadLine(NetworkStream inputStream)
+        private static string ReadLine(Stream inputStream)
         {
             byte[] bytes;
             try
