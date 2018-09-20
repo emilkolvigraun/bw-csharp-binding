@@ -23,6 +23,7 @@ namespace BWBinding.Common
             outputStream.Write(header, 0, header.Length);
             outputStream.Write(value, 0, value.Length);
             outputStream.Write(newLine, 0, newLine.Length);
+            outputStream.Flush();
         }
 
     }

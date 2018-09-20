@@ -1,5 +1,6 @@
 ﻿using BWBinding.Common;
 using System;
+using System.Text.RegularExpressions;
 
 namespace BWBinding.Utils
 {
@@ -7,7 +8,7 @@ namespace BWBinding.Utils
     {
         private static byte[] Parse(string str)
         {
-            string[] informationTokens = str.Split('\\');
+            string[] informationTokens = Regex.Split(str, "\\.");
             if (informationTokens.Length != 4)
             {
                 throw new ArgumentException("The Octed() has to contain four elements. Yours doesn't. \n");

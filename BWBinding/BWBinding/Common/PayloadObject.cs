@@ -15,6 +15,7 @@ namespace BWBinding.Common
             this.type = type;
             this.load = load;
         }
+
         public void Write(Stream outputStream)
         {
             byte[] header = Encoding.UTF8.GetBytes(string.Format("po {0} {1}\n", type, load.Length));
@@ -22,7 +23,9 @@ namespace BWBinding.Common
             outputStream.Write(header, 0, header.Length);
             outputStream.Write(load, 0, load.Length);
             outputStream.Write(newLine, 0, newLine.Length);
+            outputStream.Flush();
         }
+
         private bool ArraysEqual<T>(T[] a1, T[] a2)
         {
             if (ReferenceEquals(a1, a2))
