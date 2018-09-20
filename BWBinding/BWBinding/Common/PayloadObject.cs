@@ -26,40 +26,12 @@ namespace BWBinding.Common
             outputStream.Flush();
         }
 
-        private bool ArraysEqual<T>(T[] a1, T[] a2)
+        public override bool Equals(object obj)
         {
-            if (ReferenceEquals(a1, a2))
-                return true;
-
-            if (a1 == null || a2 == null)
-                return false;
-
-            if (a1.Length != a2.Length)
-                return false;
-
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-            for (int i = 0; i < a1.Length; i++)
-            {
-                if (!comparer.Equals(a1[i], a2[i])) return false;
-            }
-            return true;
-        }
-        public override bool Equals(object o)
-        {
-            if (o == this)
-            {
-                return true;
-            }
-            else if (o == null)
-            {
-                return false;
-            }
-            else if (!(o is PayloadObject)) {
-                return false;
-            } else {
-                PayloadObject other = (PayloadObject)o;
-                return this.type.Equals(other.type) && ArraysEqual(this.load, other.load);
-            }
+            var @object = obj as PayloadObject;
+            return @object != null &&
+                   EqualityComparer<PayloadType>.Default.Equals(type, @object.type) &&
+                   EqualityComparer<byte[]>.Default.Equals(load, @object.load);
         }
     }
 }

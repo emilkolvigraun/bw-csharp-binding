@@ -21,6 +21,14 @@ namespace BWBinding.Common
             this.load = load;
         }
 
+        public override bool Equals(object obj)
+        {
+            var @object = obj as RoutingObject;
+            return @object != null &&
+                   routingNumber == @object.routingNumber &&
+                   EqualityComparer<byte[]>.Default.Equals(load, @object.load);
+        }
+
         public void Write(Stream outputStream)
         {
             byte[] header = Encoding.UTF8.GetBytes(string.Format("ro {0} {1}\n", routingNumber, load.Length));
@@ -29,46 +37,6 @@ namespace BWBinding.Common
             outputStream.Write(load, 0, load.Length);
             outputStream.Write(newLine, 0, newLine.Length);
             outputStream.Flush();
-        }
-
-        private bool ArraysEqual<T>(T[] a1, T[] a2)
-        {
-            if (ReferenceEquals(a1, a2))
-                return true;
-
-            if (a1 == null || a2 == null)
-                return false;
-
-            if (a1.Length != a2.Length)
-                return false;
-
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-            for (int i = 0; i < a1.Length; i++)
-            {
-                if (!comparer.Equals(a1[i], a2[i])) return false;
-            }
-            return true;
-        }
-
-        public override bool Equals(object o)
-        {
-            if (o == this)
-            {
-                return true;
-            }
-            else if (o == null)
-            {
-                return false;
-            }
-            else if (!(o is PayloadObject))
-            {
-                return false;
-            }
-            else
-            {
-                RoutingObject other = (RoutingObject)o;
-                return this.routingNumber.Equals(other.routingNumber) && ArraysEqual(this.load, other.load);
-            }
         }
     }
 }
