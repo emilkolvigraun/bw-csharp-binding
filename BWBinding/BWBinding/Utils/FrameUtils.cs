@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using BWBinding.Common;
 
 namespace BWBinding.Utils
@@ -46,6 +47,12 @@ namespace BWBinding.Utils
         public FrameUtils AddVSKeyPairGetUtils(string key, byte[] value)
         {
             vsKeyPairs.Add(new VSKeyPair(key, value));
+            return this;
+        }
+
+        public FrameUtils AddVSKeyPairGetUtils(string key, string value)
+        {
+            vsKeyPairs.Add(new VSKeyPair(key, Encoding.UTF8.GetBytes(value)));
             return this;
         }
 

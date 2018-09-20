@@ -7,8 +7,8 @@ namespace BWBinding.Common
 {
     public class PayloadObject
     {
-        private PayloadType type;
-        private byte[] load { get; }
+        public PayloadType type;
+        public byte[] load { get; }
 
         public PayloadObject(PayloadType type, byte[] load)
         {

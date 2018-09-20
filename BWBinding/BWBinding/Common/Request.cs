@@ -16,6 +16,7 @@ namespace BWBinding.Common
         public List<RoutingObject> routingObjects { get; set; }
         public List<PayloadObject> payloadObjects { get; set; }
         public RequestType type { get; set; }
+        public bool leavePacked { get; set; }
 
         public Request(RequestType type, string uri, bool persist, DateTime expiry, long expiryDelta, string primaryAccessChain,
             bool ifVerify, ChainLevel elaborationLevel, bool autoChain, List<RoutingObject> routingObjects,
@@ -32,6 +33,22 @@ namespace BWBinding.Common
             this.autoChain = autoChain;
             this.routingObjects = routingObjects;
             this.payloadObjects = payloadObjects;
+        }
+
+        public Request(RequestType type, string uri, DateTime expiry, long expiryDelta, string primaryAccessChain,
+            bool ifVerify, ChainLevel elaborationLevel, bool autoChain, List<RoutingObject> routingObjects,
+            bool leavePacked)
+        {
+            this.uri = uri;
+            this.type = type;
+            this.expiry = expiry;
+            this.expiryDelta = expiryDelta;
+            this.primaryAccessChain = primaryAccessChain;
+            this.ifVerify = ifVerify;
+            this.elaborationLevel = elaborationLevel;
+            this.autoChain = autoChain;
+            this.routingObjects = routingObjects;
+            this.leavePacked = leavePacked;
         }
     }
 }

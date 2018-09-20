@@ -8,9 +8,14 @@ namespace Bootstrap
 {
     class ResponseHandler : IResponseHandler
     {
-        public void ResponseReceived(Response result)
+        public ResponseHandler()
         {
-            Console.Write("Received response: ");
+            // Initializer
+        }
+
+        void IResponseHandler.ResponseReceived(Response result)
+        {
+            Console.WriteLine("Received response: " + result.status);
             if (!result.status.Equals("okay"))
             {
                 Console.WriteLine("'SetEntity(...)' action Failed because: " + result.reason);

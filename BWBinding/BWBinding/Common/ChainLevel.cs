@@ -1,7 +1,7 @@
 ﻿
 namespace BWBinding.Common
 {
-    enum ChainLevel
+    public enum ChainLevel
     {
         UNSPECIFIED,
         PARTIAL,

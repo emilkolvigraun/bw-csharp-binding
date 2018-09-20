@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using BWBinding.Common;
 using BWBinding.Control;
@@ -55,7 +56,7 @@ namespace BWBinding
                 }
                 listenerThread.Start();
             }
-            catch(Exception ex) when (ex is SocketException || ex is IOException || ex is CorruptedFrameException)
+            catch (Exception ex) when (ex is SocketException || ex is IOException || ex is CorruptedFrameException)
             {
                 Dispose();
                 if (ex is CorruptedFrameException)
@@ -65,8 +66,8 @@ namespace BWBinding
                 else
                 {
                     throw new Exception("Couldn't connect to the server.\n" + ex.ToString());
-                }              
-            } 
+                }
+            }
         }
 
         public void Dispose()
@@ -118,7 +119,8 @@ namespace BWBinding
                 {
                     byte[] buffer = new byte[fileStream.Length];
                     fileStream.ReadByte();
-                    fileStream.Read(buffer, 0, (int) fileStream.Length);
+                    fileStream.Read(buffer, 0, (int)fileStream.Length);
+                    Console.WriteLine(buffer.ToString());
                     BuildEntity(buffer, responseHandler);
                 }
             }
@@ -132,7 +134,7 @@ namespace BWBinding
         {
             int sequenceNumber = Frame.GenerateSequenceNumber();
             FrameUtils frameUtils = new FrameUtils(Command.SET_ENTITY, sequenceNumber);
-            PayloadType payloadType = new PayloadType(new byte[]{1, 0, 1, 2});
+            PayloadType payloadType = new PayloadType(new byte[] { 1, 0, 1, 2 });
             PayloadObject payloadObject = new PayloadObject(payloadType, fileBytes);
             frameUtils.AddPayloadObjectGetUtils(payloadObject);
             Frame frame = frameUtils.Build();
@@ -141,45 +143,153 @@ namespace BWBinding
             ActivateResponseHandler(sequenceNumber, responseHandler);
         }
 
-        public void MakeEntity(Request request, IResponseHandler responseHandler, IMessageHandler messageHandler)
+        public void Publish(Request request, IResponseHandler responseHandler)
         {
-            // Removed
+            if (request.type.Equals(RequestType.PUBLISH))
+            {
+                Command command = Command.PUBLISH;
+
+                if (request.persist)
+                {
+                    command = Command.PERSIST;
+                }
+
+                int sequenceNumber = Frame.GenerateSequenceNumber();
+                FrameUtils frameUtils = new FrameUtils(command, sequenceNumber);
+                frameUtils.AddVSKeyPairGetUtils("uri", request.uri);
+
+                if (request.persist)
+                {
+                    frameUtils.SetCommandGetUtils(Command.PERSIST);
+                }
+                else
+                {
+                    frameUtils.SetCommandGetUtils(Command.PUBLISH);
+                }
+
+                frameUtils.AddVSKeyPairGetUtils("persist", request.persist.ToString());
+                if (request.expiry != null)
+                {
+                    frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ssXXX"));
+                }
+
+                if (request.expiryDelta > 0)
+                {
+                    frameUtils.AddVSKeyPairGetUtils("expiryDelta", string.Format("%dms", request.expiryDelta));
+                }
+
+                if (request.primaryAccessChain != null)
+                {
+                    frameUtils.AddVSKeyPairGetUtils("primary_access_chain", request.primaryAccessChain);
+                }
+
+                frameUtils.AddVSKeyPairGetUtils("doverify", request.ifVerify.ToString());
+
+                if (!request.elaborationLevel.Equals(ChainLevel.UNSPECIFIED))
+                {
+                    frameUtils.AddVSKeyPairGetUtils("elaborate_pac", request.elaborationLevel.ToString().ToLower());
+                }
+
+                if (request.autoChain)
+                {
+                    frameUtils.AddVSKeyPairGetUtils("autochain", "true");
+                }
+
+                foreach (RoutingObject routingObject in request.routingObjects)
+                {
+                    frameUtils.AddRoutingObjectGetUtils(routingObject);
+                }
+
+                foreach (PayloadObject payloadObject in request.payloadObjects)
+                {
+                    frameUtils.AddPayloadObjectGetUtils(payloadObject);
+                }
+
+                Frame publishFrame = frameUtils.Build();
+                publishFrame.Write(Controller.Instance.outputStream);
+                Controller.Instance.outputStream.Flush();
+                ActivateResponseHandler(sequenceNumber, responseHandler);
+            }
         }
 
-        public string Publish()
+        public void Subscribe(Request request, IResponseHandler responseHandler, IMessageHandler messageHandler)
         {
-            Command command = Command.PUBLISH;
-            return CommandUtils.GetCode(command);
-        }
+            int sequenceNumber = Frame.GenerateSequenceNumber();
+            FrameUtils frameUtils = new FrameUtils(Command.SUBSCRIBE, sequenceNumber);
+            frameUtils.AddVSKeyPairGetUtils("uri", request.uri);
+            if (request.expiry != null)
+            {
+                frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ssXXX"));
+            }
 
-        public string Subscribe()
-        {
-            Command command = Command.SUBSCRIBE;
-            return CommandUtils.GetCode(command);
+            if (request.expiryDelta > 0)
+            {
+                frameUtils.AddVSKeyPairGetUtils("expirydelta", string.Format("%dms", request.expiryDelta));
+            }
+
+            if (request.primaryAccessChain != null)
+            {
+                frameUtils.AddVSKeyPairGetUtils("primary_access_chain", request.primaryAccessChain);
+            }
+
+            frameUtils.AddVSKeyPairGetUtils("doverify", request.ifVerify.ToString());
+            if (request.elaborationLevel != ChainLevel.UNSPECIFIED)
+            {
+                frameUtils.AddVSKeyPairGetUtils("elaborate_pac", request.elaborationLevel.ToString().ToLower());
+            }
+
+            if (request.autoChain)
+            {
+                frameUtils.AddVSKeyPairGetUtils("autochain", "true");
+            }
+
+            if (!request.leavePacked)
+            {
+                frameUtils.AddVSKeyPairGetUtils("unpack", "true");
+            }
+
+            foreach (RoutingObject routingObject in request.routingObjects)
+            {
+                frameUtils.AddRoutingObjectGetUtils(routingObject);
+            }
+
+            Frame subscribeFrame = frameUtils.Build();
+            subscribeFrame.Write(Controller.Instance.outputStream);
+            Controller.Instance.outputStream.Flush();
+
+            if (responseHandler != null)
+            {
+                ActivateResponseHandler(sequenceNumber, responseHandler);
+            }
+
+            if (messageHandler != null)
+            {
+                ActivateMessageHandler(sequenceNumber, messageHandler);
+            }
         }
 
         public string List()
         {
             Command command = Command.LIST;
-            return CommandUtils.GetCode(command);
+            return CommandUtils.GetCode(command) + " not yet implemented.";
         }
 
         public string Query()
         {
             Command command = Command.QUERY;
-            return CommandUtils.GetCode(command);
+            return CommandUtils.GetCode(command) + " not yet implemented.";
         }
 
         public string MakeDoT()
         {
             Command command = Command.MAKE_DOT;
-            return CommandUtils.GetCode(command);
+            return CommandUtils.GetCode(command) + " not yet implemented.";
         }
 
         public string MakeChain()
         {
             Command command = Command.MAKE_CHAIN;
-            return CommandUtils.GetCode(command);
+            return CommandUtils.GetCode(command) + " not yet implemented.";
         }
     }
 }

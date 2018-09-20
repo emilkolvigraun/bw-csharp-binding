@@ -4,10 +4,10 @@ namespace BWBinding.Common
 {
     public class Message
     {
-        private string from { get; }
-        private string uri { get; }
-        private List<PayloadObject> payloadObjects { get; }
-        private List<RoutingObject> routingObjects { get; }
+        public string from { get; set; }
+        public string uri { get; set; }
+        public List<PayloadObject> payloadObjects { get; set; }
+        public List<RoutingObject> routingObjects { get; set; }
 
         public Message(string from, string uri, List<PayloadObject> payloadObjects, List<RoutingObject> routingObjects)
         {
@@ -15,7 +15,6 @@ namespace BWBinding.Common
             this.uri = uri;
             this.payloadObjects = payloadObjects;
             this.routingObjects = routingObjects;
-
         }
     }
 }

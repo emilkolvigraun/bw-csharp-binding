@@ -6,7 +6,7 @@ using BWBinding.Common;
 
 namespace BWBinding.Utils
 {
-    class RequestUtils
+    public class RequestUtils
     {
         public string uri;
         public bool persist;
@@ -19,11 +19,36 @@ namespace BWBinding.Utils
         public List<RoutingObject> routingObjects;
         public List<PayloadObject> payloadObjects;
         public RequestType type;
+        public bool leavePacked;
 
         public RequestUtils(string uri, RequestType type)
         {
-            this.uri = uri;
-            this.type = type;
+            if (type.Equals(RequestType.PUBLISH))
+            {
+                this.uri = uri;
+                this.type = type;
+                ifVerify = false;
+                elaborationLevel = ChainLevel.UNSPECIFIED;
+                autoChain = false;
+                routingObjects = new List<RoutingObject>();
+                payloadObjects = new List<PayloadObject>();
+            }
+            if (type.Equals(RequestType.SUBSCRIBE))
+            {
+                this.uri = uri;
+                this.type = type;
+                ifVerify = false;
+                elaborationLevel = ChainLevel.UNSPECIFIED;
+                autoChain = false;
+                routingObjects = new List<RoutingObject>();
+                leavePacked = false;
+            }
+        }
+
+        public RequestUtils SetLeavePacked(bool leavePacked)
+        {
+            this.leavePacked = leavePacked;
+            return this;
         }
 
         public RequestUtils SetUri(string uri)
@@ -105,16 +130,14 @@ namespace BWBinding.Utils
             payloadObjects.Clear();
         }
 
-        public Request Build(RequestType type)
+        public Request BuildPublisher()
         {
-            if (type.Equals(RequestType.PUBLISH))
-            {
-                return new Request(RequestType.PUBLISH, uri, persist, expiry, expiryDelta, primaryAccessChain, ifVerify, elaborationLevel, autoChain, routingObjects, payloadObjects);
-            }
-            else
-            {
-                return null;
-            }
+            return new Request(RequestType.PUBLISH, uri, persist, expiry, expiryDelta, primaryAccessChain, ifVerify, elaborationLevel, autoChain, routingObjects, payloadObjects);
+        }
+
+        public Request BuildSubcriber()
+        {
+            return new Request(RequestType.SUBSCRIBE, uri, expiry, expiryDelta, primaryAccessChain, ifVerify, elaborationLevel, autoChain, routingObjects, leavePacked);
         }
     }
 }

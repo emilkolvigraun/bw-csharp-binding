@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="BossWaveClient.cs" />
     <Compile Include="Common\ChainLevel.cs" />
+    <Compile Include="Common\Request.cs" />
+    <Compile Include="Common\RequestType.cs" />
     <Compile Include="Control\ClientController.cs" />
     <Compile Include="Control\Controller.cs" />
     <Compile Include="Common\Frame.cs" />
@@ -51,7 +53,6 @@
     <Compile Include="Exceptions\CorruptedFrameException.cs" />
     <Compile Include="Observer\BossWaveListener.cs" />
     <Compile Include="Common\Command.cs" />
-    <Compile Include="Requests\MakeEntityRequest.cs" />
     <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\FrameUtils.cs" />
     <Compile Include="Common\Message.cs" />
@@ -61,9 +62,8 @@
     <Compile Include="Interfaces\IResponseHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\VSKeyPair.cs" />
-    <Compile Include="Utils\MakeEntityRequestUtils.cs" />
     <Compile Include="Utils\PayloadUtils.cs" />
-    <Compile Include="Utils\PubSubUtils.cs" />
+    <Compile Include="Utils\RequestUtils.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
