@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using BWBinding.Common;
 using BWBinding.Control;
 using BWBinding.Exceptions;
 using BWBinding.Interfaces;
 using BWBinding.Observer;
-using BWBinding.Requests;
 using BWBinding.Utils;
 
 namespace BWBinding
@@ -62,7 +60,6 @@ namespace BWBinding
                 Dispose();
                 if (ex is CorruptedFrameException)
                 {
-
                     throw new SystemException(ex.ToString());
                 }
                 else
@@ -114,6 +111,7 @@ namespace BWBinding
          */
         public void SetEntity(string filepath, IResponseHandler responseHandler)
         {
+            Console.WriteLine(listenerThread.IsAlive);
             try
             {
                 using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
@@ -143,45 +141,9 @@ namespace BWBinding
             ActivateResponseHandler(sequenceNumber, responseHandler);
         }
 
-        public void MakeEntity(MakeEntityRequest request, IResponseHandler responseHandler,
-            IMessageHandler messageHandler)
+        public void MakeEntity(Request request, IResponseHandler responseHandler, IMessageHandler messageHandler)
         {
-            int sequenceNumber = Frame.GenerateSequenceNumber();
-            FrameUtils frameUtils = new FrameUtils(Command.MAKE_ENTITY, sequenceNumber);
-            string contact = request.contact;
-            if (contact != null)
-            {
-                frameUtils.AddVSKeyPairGetUtils("contact", Encoding.UTF8.GetBytes(contact));
-            }
-            string comment = request.comment;
-            if (comment != null)
-            {
-                frameUtils.AddVSKeyPairGetUtils("contact", Encoding.UTF8.GetBytes(comment));
-            }
-            DateTime expiry = request.GetDateTime;
-            if (expiry != null)
-            {
-                frameUtils.AddVSKeyPairGetUtils("expiry", Encoding.UTF8.GetBytes(expiry.ToString("yyyy-MM-dd'T'HH:mm:ssXXX")));
-            }
-            long expiryDelta = request.expiryDelta;
-            frameUtils.AddVSKeyPairGetUtils("expirydelta", Encoding.UTF8.GetBytes(string.Format("%dms", expiryDelta)));
-            foreach (string revoker in request.revokers)
-            {
-                frameUtils.AddVSKeyPairGetUtils("revoker", Encoding.UTF8.GetBytes(revoker));
-            }
-            frameUtils.AddVSKeyPairGetUtils("omitcreationdate",Encoding.UTF8.GetBytes(request.leaveOutCreationDate.ToString()));
-            Frame frame = frameUtils.Build();
-            frame.Write(Controller.Instance.outputStream);
-            Controller.Instance.outputStream.Flush();
-            if (responseHandler != null)
-            {
-                ActivateResponseHandler(sequenceNumber, responseHandler);
-            }
-
-            if (messageHandler != null)
-            {
-                ActivateMessageHandler(sequenceNumber, messageHandler);
-            }
+            // Removed
         }
 
         public string Publish()

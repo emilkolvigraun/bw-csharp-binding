@@ -8,13 +8,16 @@ namespace Bootstrap
         static void Main(string[] args)
         {
             ResponseHandler responseHandler = new ResponseHandler();
+            // MakeEntityRequest entityRequest = new MakeEntityRequest("test_contact", "test entity", DateTime.MaxValue, Int64.MaxValue, new List<string>(), false);
+
+
             BossWaveClient bwClient = new BossWaveClient("localhost", 28589);
 
             bwClient.Connect();
 
             // Purpose is to execute / test commands
             bwClient.SetEntity("C:/Users/Emil S. Kolvig-Raun/bankroll.ent", responseHandler);
-            // bwClient.MakeEntity();
+            // bwClient.MakeEntity(entityRequest, responseHandler, null);
 
             Console.WriteLine(bwClient.Subscribe());
             Console.WriteLine(bwClient.Publish());
