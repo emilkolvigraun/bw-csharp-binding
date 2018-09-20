@@ -43,16 +43,16 @@ namespace Bootstrap
             Console.WriteLine(" ");
 
             // Testing Reading Verifying Signing Key Pair Frame
-            string vsString = "subs 0000000099 000000876\n" + "kv testKey 9\n" + "testValue\n" + "kv blahbla2 10\n" + "blahblahb2\n" + "kv lawlKey 6\n" + "foobar\n" + "end\n";
+            string vsString = "pute 0000000099 0000001337\n" + "kv testKey 9\n" + "testValue\n" + "kv blahbla2 10\n" + "blahblahb2\n" + "kv lawlKey 6\n" + "foobar\n" + "end\n";
             byte[] vsBytes = Encoding.UTF8.GetBytes(vsString);
             MemoryStream vsStream = new MemoryStream(vsBytes);
             Frame csFrame = Frame.ReadFromStream(vsStream);
 
-            Console.WriteLine(Command.SUBSCRIBE + " = " + csFrame.command);
-            Console.WriteLine("876" + " = " + csFrame.sequenceNumber);
-            Console.WriteLine("3" + " = " + csFrame.vsKeyPairs.Count);
-            Console.WriteLine("blahblahb2" + " = " + Encoding.UTF8.GetString(csFrame.PopFirstValue("blahbla2")));
-            Console.WriteLine("Routing objects any?" + " (no) " + csFrame.routingObjects.Any());
+            Console.WriteLine("Command: " + Command.PUT_ENTITY + " = " + csFrame.command);
+            Console.WriteLine("Sequence number: " + "1337" + " = " + csFrame.sequenceNumber);
+            Console.WriteLine("Number of VS key pais: " + "3" + " = " + csFrame.vsKeyPairs.Count);
+            Console.WriteLine("Value from testKey: " + "testValue" + " = " + Encoding.UTF8.GetString(csFrame.PopFirstValue("testKey")));
+            Console.WriteLine("Empty list: false" + " = " + csFrame.routingObjects.Any());
 
             //Testing Writing VSKeyPair
             FrameUtils writerUtils = new FrameUtils(Command.PUBLISH, 9876);
@@ -60,19 +60,15 @@ namespace Bootstrap
             writerUtils.AddVSKeyPairGetUtils("testKey2", "testValue2");
             Frame writerFrame = writerUtils.Build();
             MemoryStream ns1 = new MemoryStream();
-            BinaryWriter bs1 = new BinaryWriter(ns1);
+            Stream bs1 = ns1;
             writerFrame.Write(bs1);
             Console.WriteLine("");
-            Console.WriteLine(Encoding.UTF8.GetString(ns1.ToArray()));
-            Console.WriteLine("");
-            string expectedFrameStr = "publ 0000000000 0000001600\n" +
-                                      "kv testKey1 10\n" +
-                                      "testValue1\n" +
-                                      "kv testKey2 10\n" +
-                                      "testValue2\n" +
-                                      "end\n";
-            Console.WriteLine(expectedFrameStr);
-            Console.WriteLine("");
+            string frameRetreived = Encoding.UTF8.GetString(ns1.ToArray());
+            string expectedFrameStr = "publ 0000000000 0000009876\n" + "kv testKey1 10\n" + "testValue1\n" + "kv testKey2 10\n" + "testValue2\n" + "end\n";
+            if (frameRetreived.Equals(expectedFrameStr))
+            {
+                Console.WriteLine("Writing test: They are equal.");
+            }
         }
     }
 }

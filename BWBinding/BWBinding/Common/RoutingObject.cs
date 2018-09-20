@@ -20,12 +20,13 @@ namespace BWBinding.Common
             this.routingNumber = routingNumber;
             this.load = load;
         }
-        public void Write(BinaryWriter outputStream)
+        public void Write(Stream outputStream)
         {
-            string header = string.Format("ro %d %d\n", routingNumber, load.Length);
-            outputStream.Write(Encoding.UTF8.GetBytes(header));
-            outputStream.Write(load);
-            outputStream.Write('\n');
+            byte[] header = Encoding.UTF8.GetBytes(string.Format("ro {0} {1}\n", routingNumber, load.Length));
+            byte[] newLine = Encoding.UTF8.GetBytes("\n");
+            outputStream.Write(header, 0, header.Length);
+            outputStream.Write(load, 0, load.Length);
+            outputStream.Write(newLine, 0, newLine.Length);
         }
         private bool ArraysEqual<T>(T[] a1, T[] a2)
         {

@@ -47,7 +47,7 @@ namespace BWBinding
                 listenerThread = new Thread(new ThreadStart(new BossWaveListener().Run));
                 connection = new TcpClient(server, portNumber);
                 Controller.Instance.inputStream = connection.GetStream();
-                Controller.Instance.outputStream = new BinaryWriter(connection.GetStream());
+                Controller.Instance.outputStream = connection.GetStream();
                 Frame frame = Frame.ReadFromStream(Controller.Instance.inputStream);
                 if (frame.command != Command.HELLO)
                 {
@@ -170,12 +170,12 @@ namespace BWBinding
                 frameUtils.AddVSKeyPairGetUtils("persist", request.persist.ToString());
                 if (request.expiry != null)
                 {
-                    frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ssXXX"));
+                    frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ss.fffK"));
                 }
 
                 if (request.expiryDelta > 0)
                 {
-                    frameUtils.AddVSKeyPairGetUtils("expiryDelta", string.Format("%dms", request.expiryDelta));
+                    frameUtils.AddVSKeyPairGetUtils("expiryDelta", string.Format("{0}ms", request.expiryDelta));
                 }
 
                 if (request.primaryAccessChain != null)
@@ -219,12 +219,12 @@ namespace BWBinding
             frameUtils.AddVSKeyPairGetUtils("uri", request.uri);
             if (request.expiry != null)
             {
-                frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ssXXX"));
+                frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ss.fffK"));
             }
 
             if (request.expiryDelta > 0)
             {
-                frameUtils.AddVSKeyPairGetUtils("expirydelta", string.Format("%dms", request.expiryDelta));
+                frameUtils.AddVSKeyPairGetUtils("expirydelta", string.Format("{0}ms", request.expiryDelta));
             }
 
             if (request.primaryAccessChain != null)

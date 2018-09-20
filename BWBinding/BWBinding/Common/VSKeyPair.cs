@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Net.Sockets;
+using System.Text;
 
 namespace BWBinding.Common
 {
@@ -13,12 +16,13 @@ namespace BWBinding.Common
             this.value = value;
         }
 
-        public void Write(BinaryWriter outputStream)
+        public void Write(Stream outputStream)
         {
-            string header = string.Format("kv %s %d\n", key, value.Length);
-            outputStream.Write(header);
-            outputStream.Write(value);
-            outputStream.Write('\n');
+            byte[] header = Encoding.UTF8.GetBytes(string.Format("kv {0} {1}\n", key, value.Length));
+            byte[] newLine = Encoding.UTF8.GetBytes("\n");
+            outputStream.Write(header, 0, header.Length);
+            outputStream.Write(value, 0, value.Length);
+            outputStream.Write(newLine, 0, newLine.Length);
         }
 
     }

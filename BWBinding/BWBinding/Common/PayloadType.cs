@@ -43,15 +43,15 @@ namespace BWBinding.Common
         {
             if (digitalInformation != null && number > 0)
             {
-                return string.Format("%d.%d.%d.%d:%d", digitalInformation[0], digitalInformation[1], digitalInformation[2], digitalInformation[3], number);
+                return string.Format("{0}.{1}.{2}.{3}:{4}", digitalInformation[0], digitalInformation[1], digitalInformation[2], digitalInformation[3], number);
             }
             else if (digitalInformation != null)
             {
-                return string.Format("%d.%d.%d.%d:", digitalInformation[0], digitalInformation[1], digitalInformation[2], digitalInformation[3]);
+                return string.Format("{0}.{1}.{2}.{3}:", digitalInformation[0], digitalInformation[1], digitalInformation[2], digitalInformation[3]);
             }
             else
             {
-                return string.Format(":%d", number);
+                return string.Format(":{0}", number);
             }
         }
 

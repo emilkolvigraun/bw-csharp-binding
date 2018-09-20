@@ -57,7 +57,7 @@ namespace BWBinding.Common
             {
                 inputStream.Read(frameBytes, 0, BW_HEADER_LENGTH);         
                 string frameHeader = Encoding.UTF8.GetString(frameBytes);
-                authorizationTokens = Regex.Split(frameHeader.Trim(), @" ");
+                authorizationTokens = Regex.Split(frameHeader.Trim(), " ");
             }
             catch (IOException ex)
             {
@@ -97,7 +97,7 @@ namespace BWBinding.Common
             string currentLine;
             while (!(currentLine = ReadLine(inputStream)).Equals("end"))
             {
-                string[] tokens = Regex.Split(currentLine, @" ");
+                string[] tokens = Regex.Split(currentLine, " ");
                 if (tokens.Length != 3)
                 {
                     throw new CorruptedFrameException("The Header does not contain three fields but " + tokens.Length + ".");
@@ -229,9 +229,10 @@ namespace BWBinding.Common
         }
 
         // Mother Writer
-        public void Write(BinaryWriter outputStream)
+        public void Write(Stream outputStream)
         {
-            outputStream.Write(Encoding.UTF8.GetBytes(string.Format("%s 0000000000 %010d\n", CommandUtils.GetCode(command), sequenceNumber)));
+            byte[] encoded = Encoding.UTF8.GetBytes(string.Format("{0} 0000000000 {1:0000000000}\n", CommandUtils.GetCode(command), sequenceNumber));
+            outputStream.Write(encoded, 0, encoded.Length);
             foreach (VSKeyPair pair in vsKeyPairs)
             {
                 pair.Write(outputStream);
@@ -244,6 +245,7 @@ namespace BWBinding.Common
             {
                 route.Write(outputStream);
             }
+            outputStream.Write(Encoding.UTF8.GetBytes("end\n"), 0, Encoding.UTF8.GetBytes("end\n").Length);
         }
     }
 }
