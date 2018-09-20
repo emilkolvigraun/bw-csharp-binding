@@ -51,6 +51,7 @@
     <Compile Include="Exceptions\CorruptedFrameException.cs" />
     <Compile Include="Observer\BossWaveListener.cs" />
     <Compile Include="Common\Command.cs" />
+    <Compile Include="Requests\MakeEntityRequest.cs" />
     <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\FrameUtils.cs" />
     <Compile Include="Common\Message.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Interfaces\IResponseHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\VSKeyPair.cs" />
+    <Compile Include="Utils\MakeEntityRequestUtils.cs" />
     <Compile Include="Utils\PayloadUtils.cs" />
     <Compile Include="Utils\PubSubUtils.cs" />
   </ItemGroup>

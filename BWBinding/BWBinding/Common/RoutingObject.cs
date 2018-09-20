@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BWBinding.Common
 {
-    class RoutingObject
+    public class RoutingObject
     {
         private int routingNumber;
         private byte[] load;

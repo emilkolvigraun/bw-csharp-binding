@@ -2,7 +2,7 @@
 
 namespace BWBinding.Common
 {
-    class Message
+    public class Message
     {
         private string from { get; }
         private string uri { get; }

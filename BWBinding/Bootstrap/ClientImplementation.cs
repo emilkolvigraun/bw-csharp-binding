@@ -14,7 +14,8 @@ namespace Bootstrap
 
             // Purpose is to execute / test commands
             bwClient.SetEntity("C:/Users/Emil S. Kolvig-Raun/bankroll.ent", responseHandler);
-            Console.WriteLine(bwClient.MakeEntity());
+            // bwClient.MakeEntity();
+
             Console.WriteLine(bwClient.Subscribe());
             Console.WriteLine(bwClient.Publish());
             Console.WriteLine(bwClient.List());

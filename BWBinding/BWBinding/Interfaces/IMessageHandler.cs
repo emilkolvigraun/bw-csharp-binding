@@ -1,7 +1,9 @@
-﻿namespace BWBinding.Interfaces
+﻿using BWBinding.Common;
+
+namespace BWBinding.Interfaces
 {
-    interface IMessageHandler
+    public interface IMessageHandler
     {
-        void ResultReceived(Common.Message message);
+        void ResultReceived(Message message);
     }
 }

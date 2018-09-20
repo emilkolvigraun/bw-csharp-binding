@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BWBinding.Common
 {
-    class PayloadObject
+    public class PayloadObject
     {
         private PayloadType type;
         private byte[] load { get; }
@@ -17,12 +17,10 @@ namespace BWBinding.Common
         }
         public void Write(BinaryWriter outputStream)
         {
-            Console.WriteLine("Write from PayloadObject.");
             string header = string.Format("po %s %d\n", type, load.Length);
             outputStream.Write(Encoding.UTF8.GetBytes(header));
             outputStream.Write(load);
             outputStream.Write('\n');
-            if (outputStream.BaseStream != null) Console.WriteLine("The Stream is Valid.");
         }
         private bool ArraysEqual<T>(T[] a1, T[] a2)
         {
