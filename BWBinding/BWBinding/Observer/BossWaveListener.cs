@@ -16,91 +16,92 @@ namespace BWBinding.Observer
             {
                 while (true)
                 {
-                    if (Controller.Instance.inputStream.DataAvailable)
+                    Frame frame = Frame.ReadFromStream(Controller.Instance.inputStream);
+                    int sequenceNumber = frame.sequenceNumber;
+                    Command command = frame.command;
+                    switch (command)
                     {
-                        Frame frame = Frame.ReadFromStream(Controller.Instance.inputStream);
-                        int sequenceNumber = frame.sequenceNumber;
-                        Command command = frame.command;
-                        switch (command)
-                        {
-                            case Command.RESULT:
-                                IMessageHandler messageHandler;
-                                lock (Controller.Instance.messageLock)
-                                {
-                                    messageHandler = Controller.Instance.messageHandlers[sequenceNumber];
-                                }
+                        case Command.RESULT:
+                            IMessageHandler messageHandler;
+                            lock (Controller.Instance.messageLock)
+                            {
+                                messageHandler = Controller.Instance.messageHandlers[sequenceNumber];
+                            }
 
-                                IListResultHandler listResultHandler;
+                            IListResultHandler listResultHandler = null;
+                            if (Controller.Instance.resultHandlers.Count >= 1)
+                            {
                                 lock (Controller.Instance.resultLock)
                                 {
+                                    Console.WriteLine(Controller.Instance.resultHandlers.Count);
                                     listResultHandler = Controller.Instance.resultHandlers[sequenceNumber];
                                 }
 
-                                if (messageHandler != null)
+                            }
+                            if (messageHandler != null)
+                            {
+                                string uri = Encoding.UTF8.GetString(frame.PopFirstValue("uri"));
+                                string from = Encoding.UTF8.GetString(frame.PopFirstValue("from"));
+                                bool unpack = true;
+                                byte[] bytes = frame.PopFirstValue("unpack");
+                                if (bytes != null)
                                 {
-                                    string uri = Encoding.UTF8.GetString(frame.PopFirstValue("uri"));
-                                    string from = Encoding.UTF8.GetString(frame.PopFirstValue("from"));
-                                    bool unpack = true;
-                                    byte[] bytes = frame.PopFirstValue("unpack");
-                                    if (bytes != null)
-                                    {
-                                        unpack = bool.Parse(Encoding.UTF8.GetString(bytes));
-                                    }
-
-                                    Message message;
-                                    if (unpack)
-                                    {
-                                        message = new Message(from, uri, frame.payloadObjects, frame.routingObjects);
-                                    }
-                                    else
-                                    {
-                                        message = new Message(from, uri, null, null);
-                                    }
-
-                                    messageHandler.ResultReceived(message);
-                                }
-                                else if (listResultHandler != null)
-                                {
-                                    string finishedStr = Encoding.UTF8.GetString(frame.PopFirstValue("finished"));
-                                    bool finished = bool.Parse(finishedStr);
-                                    if (finished)
-                                    {
-                                        listResultHandler.finish();
-                                    }
-                                    else
-                                    {
-                                        string child = Encoding.UTF8.GetString(frame.PopFirstValue("child"));
-                                        listResultHandler.Result(child);
-                                    }
+                                    unpack = bool.Parse(Encoding.UTF8.GetString(bytes));
                                 }
 
-                                break;
-                            case Command.RESPONSE:
-                                IResponseHandler responseHandler;
-                                lock (Controller.Instance.responseLock)
+                                Message message;
+                                if (unpack)
                                 {
-                                    responseHandler = Controller.Instance.responseHandlers[sequenceNumber];
+                                    message = new Message(from, uri, frame.payloadObjects, frame.routingObjects);
+                                }
+                                else
+                                {
+                                    message = new Message(from, uri, null, null);
                                 }
 
-                                if (responseHandler != null)
+                                messageHandler.ResultReceived(message);
+                            }
+                            else if (listResultHandler != null)
+                            {
+                                string finishedStr = Encoding.UTF8.GetString(frame.PopFirstValue("finished"));
+                                bool finished = bool.Parse(finishedStr);
+                                if (finished)
                                 {
-                                    string status = Encoding.UTF8.GetString(frame.PopFirstValue("status"));
-                                    string reason = null;
-                                    if (!status.Equals("okay"))
-                                    {
-                                        reason = Encoding.UTF8.GetString(frame.PopFirstValue("reason"));
-                                    }
+                                    listResultHandler.finish();
+                                }
+                                else
+                                {
+                                    string child = Encoding.UTF8.GetString(frame.PopFirstValue("child"));
+                                    listResultHandler.Result(child);
+                                }
+                            }
+                            break;
+                        case Command.RESPONSE:
+                            IResponseHandler responseHandler;
+                            lock (Controller.Instance.responseLock)
+                            {
+                                responseHandler = Controller.Instance.responseHandlers[sequenceNumber];
+                            }
 
-                                    responseHandler.ResponseReceived(new Response(status, reason));
+                            if (responseHandler != null)
+                            {
+                                string status = Encoding.UTF8.GetString(frame.PopFirstValue("status"));
+                                string reason = null;
+                                if (!status.Equals("okay"))
+                                {
+                                    reason = Encoding.UTF8.GetString(frame.PopFirstValue("reason"));
                                 }
 
-                                break;
-                            default:
-                                break;
+                                responseHandler.ResponseReceived(new Response(status, reason));
+                            }
 
-                        }
+                            break;
+                        default:
+                            break;
+
                     }
                 }
+
             }
             catch (Exception ex) when (ex is SocketException || ex is SystemException || ex is IOException || ex is ObjectDisposedException)
             {

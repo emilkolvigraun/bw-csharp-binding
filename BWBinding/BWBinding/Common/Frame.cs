@@ -32,11 +32,6 @@ namespace BWBinding.Common
             this.routingObjects = routingObjects;
         }
 
-        public List<RoutingObject> RoutingObjects
-        {
-            get { return routingObjects; }
-        }
-
         public byte[] PopFirstValue(string key)
         {
             foreach (VSKeyPair pair in vsKeyPairs)
@@ -233,6 +228,7 @@ namespace BWBinding.Common
         {
             byte[] encoded = Encoding.UTF8.GetBytes(string.Format("{0} 0000000000 {1:0000000000}\n", CommandUtils.GetCode(command), sequenceNumber));
             outputStream.Write(encoded, 0, encoded.Length);
+
             foreach (VSKeyPair pair in vsKeyPairs)
             {
                 pair.Write(outputStream);
@@ -245,7 +241,9 @@ namespace BWBinding.Common
             {
                 route.Write(outputStream);
             }
-            outputStream.Write(Encoding.UTF8.GetBytes("end\n"), 0, Encoding.UTF8.GetBytes("end\n").Length);
+
+            byte[] newLine = Encoding.UTF8.GetBytes("end\n");
+            outputStream.Write(newLine, 0, newLine.Length);
         }
     }
 }

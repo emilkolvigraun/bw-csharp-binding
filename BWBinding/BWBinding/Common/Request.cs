@@ -7,7 +7,7 @@ namespace BWBinding.Common
     {
         public string uri { get; set; }
         public bool persist { get; set; }
-        public DateTime expiry { get; set; }
+        public long expiry { get; set; }
         public long expiryDelta { get; set; }
         public bool ifVerify { get; set; }
         public string primaryAccessChain { get; set; }
@@ -25,7 +25,7 @@ namespace BWBinding.Common
             this.uri = uri;
             this.type = type;
             this.persist = persist;
-            this.expiry = expiry;
+            this.expiry = expiry.Millisecond;
             this.expiryDelta = expiryDelta;
             this.primaryAccessChain = primaryAccessChain;
             this.ifVerify = ifVerify;
@@ -41,7 +41,7 @@ namespace BWBinding.Common
         {
             this.uri = uri;
             this.type = type;
-            this.expiry = expiry;
+            this.expiry = expiry.Millisecond;
             this.expiryDelta = expiryDelta;
             this.primaryAccessChain = primaryAccessChain;
             this.ifVerify = ifVerify;

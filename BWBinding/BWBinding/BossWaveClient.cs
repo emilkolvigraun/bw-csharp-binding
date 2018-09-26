@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using BWBinding.Common;
@@ -58,7 +59,6 @@ namespace BWBinding
             }
             catch (Exception ex) when (ex is SocketException || ex is IOException || ex is CorruptedFrameException)
             {
-                Dispose();
                 if (ex is CorruptedFrameException)
                 {
                     throw new SystemException(ex.ToString());
@@ -112,21 +112,20 @@ namespace BWBinding
          */
         public void SetEntity(string filepath, IResponseHandler responseHandler)
         {
-            Console.WriteLine(listenerThread.IsAlive);
             try
             {
-                using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+                using (BufferedStream bufferedStream = new BufferedStream(new FileStream(filepath, FileMode.Open)))
                 {
-                    byte[] buffer = new byte[fileStream.Length];
-                    fileStream.ReadByte();
-                    fileStream.Read(buffer, 0, (int)fileStream.Length);
-                    Console.WriteLine(buffer.ToString());
+                    byte[] buffer = new byte[(int)(bufferedStream.Length - 1)];
+                    bufferedStream.ReadByte();
+                    bufferedStream.Read(buffer, 0, buffer.Length);
                     BuildEntity(buffer, responseHandler);
                 }
+
             }
             catch (ArgumentException ex)
             {
-                throw new ArgumentException("The path cannot be empty.");
+                throw new ArgumentException("The path cannot be empty.", ex);
             }
         }
 
@@ -134,9 +133,10 @@ namespace BWBinding
         {
             int sequenceNumber = Frame.GenerateSequenceNumber();
             FrameUtils frameUtils = new FrameUtils(Command.SET_ENTITY, sequenceNumber);
-            PayloadType payloadType = new PayloadType(new byte[] { 1, 0, 1, 2 });
+            PayloadType payloadType = new PayloadType(new byte[] { 0, 0, 0, 50 });
             PayloadObject payloadObject = new PayloadObject(payloadType, fileBytes);
             frameUtils.AddPayloadObjectGetUtils(payloadObject);
+
             Frame frame = frameUtils.Build();
             frame.Write(Controller.Instance.outputStream);
             Controller.Instance.outputStream.Flush();
@@ -168,9 +168,9 @@ namespace BWBinding
                 }
 
                 frameUtils.AddVSKeyPairGetUtils("persist", request.persist.ToString());
-                if (request.expiry != null)
+                if (request.expiry > 0)
                 {
-                    frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ss.fffK"));
+                    frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ssK"));
                 }
 
                 if (request.expiryDelta > 0)
@@ -204,7 +204,6 @@ namespace BWBinding
                 {
                     frameUtils.AddPayloadObjectGetUtils(payloadObject);
                 }
-
                 Frame publishFrame = frameUtils.Build();
                 publishFrame.Write(Controller.Instance.outputStream);
                 Controller.Instance.outputStream.Flush();
@@ -217,9 +216,9 @@ namespace BWBinding
             int sequenceNumber = Frame.GenerateSequenceNumber();
             FrameUtils frameUtils = new FrameUtils(Command.SUBSCRIBE, sequenceNumber);
             frameUtils.AddVSKeyPairGetUtils("uri", request.uri);
-            if (request.expiry != null)
+            if (request.expiry > 0)
             {
-                frameUtils.AddVSKeyPairGetUtils("expiry", request.expiry.ToString("yyyy-MM-dd'T'HH:mm:ss.fffK"));
+                frameUtils.AddVSKeyPairGetUtils("expiry", ((new DateTime(1970, 1, 1)).AddMilliseconds(request.expiry)).ToString("yyyy-MM-dd'T'HH:mm:ssK"));
             }
 
             if (request.expiryDelta > 0)
